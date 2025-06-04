@@ -11,12 +11,14 @@ void drawWindowPair(float x, float y, float z);
 // Camera controls
 float cameraX = 0.0f, cameraY = 5.0f, cameraZ = 15.0f;
 float cameraAngleX = -20.0f, cameraAngleY = 0.0f;
+float scrollOffset = 0.0f;
+std::string ledText = " CHAO MUNG DEN VOI LOP HOC CONG NGHE THONG TIN!  ";
 
 // Lighting controls
-bool mainLightOn = true;
-bool leftLightOn = true;
-bool rightLightOn = true;
-bool projectorOn = true;
+bool mainLightOn = false;
+bool leftLightOn = false;
+bool rightLightOn = false;
+bool projectorOn = false;
 bool showAirConditioners = true;
 bool windowOpen = false;  // Cửa sổ đang mở hay đóng
 
@@ -25,9 +27,9 @@ int mouseX, mouseY;
 bool mousePressed = false;
 
 // Light positions
-GLfloat mainLightPos[] = { 0.0f, 8.0f, 0.0f, 1.0f };
-GLfloat leftLightPos[] = { -6.0f, 8.0f, 2.0f, 1.0f };
-GLfloat rightLightPos[] = { 6.0f, 8.0f, 2.0f, 1.0f };
+GLfloat mainLightPos[] = { 0.0f, 7.0f, 0.0f, 1.0f };
+GLfloat leftLightPos[] = { -6.0f, .0f, 2.0f, 1.0f };
+GLfloat rightLightPos[] = { 6.0f, 7.0f, 2.0f, 1.0f };
 GLfloat projectorPos[] = { 0.0f, 7.5f, 8.0f, 1.0f };
 
 // Colors
@@ -283,7 +285,6 @@ void drawComputer() {
 
 }
 
-
 void drawWalls() {
     // ==== SÀN LÁT GẠCH CARO ====
     float tileSize = 2.0f;
@@ -308,14 +309,14 @@ void drawWalls() {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallBottom);
     glPushMatrix();
     glTranslatef(0.0f, 1.0f, -8.0f);
-    drawBox(16.0f, 2.0f, 0.2f);
+    drawBox(16.0f, 3.0f, 0.1f);
     glPopMatrix();
 
     // Trên
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallTop);
     glPushMatrix();
     glTranslatef(0.0f, 5.0f, -8.0f);
-    drawBox(16.0f, 6.0f, 0.2f);
+    drawBox(16.0f, 7.0f, 0.2f);
     glPopMatrix();
 
     // ==== TƯỜNG TRÁI ====
@@ -323,14 +324,14 @@ void drawWalls() {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallBottom);
     glPushMatrix();
     glTranslatef(-8.0f, 1.0f, 0.0f);
-    drawBox(0.2f, 2.0f, 16.0f);
+    drawBox(0.1f, 3.0f, 16.0f);
     glPopMatrix();
 
     // Trên
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallTop);
     glPushMatrix();
     glTranslatef(-8.0f, 5.0f, 0.0f);
-    drawBox(0.2f, 6.0f, 16.0f);
+    drawBox(0.2f, 7.0f, 16.0f);
     glPopMatrix();
 
     // ==== TƯỜNG PHẢI ====
@@ -338,14 +339,14 @@ void drawWalls() {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallBottom);
     glPushMatrix();
     glTranslatef(8.0f, 1.0f, 0.0f);
-    drawBox(0.2f, 2.0f, 16.0f);
+    drawBox(0.1f, 3.0f, 16.0f);
     glPopMatrix();
 
     // Trên
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallTop);
     glPushMatrix();
     glTranslatef(8.0f, 5.0f, 0.0f);
-    drawBox(0.2f, 6.0f, 16.0f);
+    drawBox(0.2f, 7.0f, 16.0f);
     glPopMatrix();
 
     // ==== CỬA SỔ TRÊN TƯỜNG TRÁI ====
@@ -361,37 +362,6 @@ void drawWalls() {
     }
 }
 
-void drawWallPicture(float x, float y, float z) {
-    GLfloat frameColor[] = { 0.4f, 0.2f, 0.1f, 1.0f };  // khung gỗ
-    GLfloat picColor[] = { 0.8f, 0.9f, 1.0f, 1.0f };    // nội dung tranh
-
-    glPushMatrix();
-    glTranslatef(x, y, z);
-
-    // Vẽ khung tranh
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, frameColor);
-    drawBox(2.0f, 1.0f, 0.05f);
-
-    // Vẽ bức tranh bên trong có texture chữ
-    glTranslatef(0.0f, 0.0f, -0.01f);
-
-    // Bật texture chữ
-    glEnable(GL_TEXTURE_2D);
-
-    // Vẽ hộp tranh với texture
-    glBegin(GL_QUADS);
-    // Mặt trước của hộp tranh (chiều ngang 0.9, dọc 0.5)
-    glTexCoord2f(0, 0); glVertex3f(-0.45f, -0.25f, 0.01f);
-    glTexCoord2f(1, 0); glVertex3f(0.45f, -0.25f, 0.01f);
-    glTexCoord2f(1, 1); glVertex3f(0.45f, 0.25f, 0.01f);
-    glTexCoord2f(0, 1); glVertex3f(-0.45f, 0.25f, 0.01f);
-    glEnd();
-
-    glDisable(GL_TEXTURE_2D);
-
-    glPopMatrix();
-}
-
 void drawWallClock(float x, float y, float z) {
     GLUquadric* quad = gluNewQuadric();
     GLfloat clockColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };   // nền trắng
@@ -402,25 +372,22 @@ void drawWallClock(float x, float y, float z) {
 
     // Viền đồng hồ
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, borderColor);
-    gluDisk(quad, 0.19f, 0.2f, 30, 1);
+    gluDisk(quad, 0.4f, 0.2f, 30, 1);
 
     // Nền mặt đồng hồ
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, clockColor);
-    gluDisk(quad, 0.0f, 0.19f, 30, 1);
+    gluDisk(quad, 0.0f, 0.4f, 30, 1);
 
     // Kim giờ và phút (tĩnh)
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, borderColor);
     glBegin(GL_LINES);
-    glVertex3f(0.0f, 0.0f, 0.01f); glVertex3f(0.0f, 0.15f, 0.01f); // phút
-    glVertex3f(0.0f, 0.0f, 0.01f); glVertex3f(0.1f, 0.0f, 0.01f);  // giờ
+    glVertex3f(0.0f, 0.0f, 0.01f); glVertex3f(0.0f, 0.30f, 0.01f); // phút
+    glVertex3f(0.0f, 0.0f, 0.01f); glVertex3f(0.2f, 0.0f, 0.01f);  // giờ
     glEnd();
 
     glPopMatrix();
     gluDeleteQuadric(quad);
 }
-
-
-
 
 void drawCabinets() {
     // Right side cabinets
@@ -428,12 +395,10 @@ void drawCabinets() {
     for (int i = 0; i < 6; i++) {
         glPushMatrix();
         glTranslatef(7.0f, 1.5f, -6.0f + i * 2.0f);
-        drawBox(1.5f, 3.0f, 1.8f);
+        drawBox(1.5f, 4.0f, 1.8f);
         glPopMatrix();
     }
 }
-
-
 
 void drawAirConditioner(float x, float y, float z) {
     GLfloat acColor[] = { 0.8f, 0.85f, 0.9f, 1.0f };
@@ -445,8 +410,6 @@ void drawAirConditioner(float x, float y, float z) {
 
     glPopMatrix();
 }
-
-
 
 void drawWindowPair(float x, float y, float z) {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
@@ -469,7 +432,6 @@ void drawWindowPair(float x, float y, float z) {
     glPopMatrix();
 }
 
-
 void drawProjector() {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, darkGray);
 
@@ -485,6 +447,115 @@ void drawProjector() {
     drawBox(0.6f, 0.3f, 0.4f);      // hộp máy chiếu
     glPopMatrix();
 
+}
+
+void drawPottedPlant(float x, float y, float z) {
+    GLUquadric* quad = gluNewQuadric();
+
+    // ==== Chậu cây ====
+    GLfloat potColor[] = { 0.5f, 0.2f, 0.1f, 1.0f };  // Nâu đất
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, potColor);
+
+    glPushMatrix();
+    glTranslatef(x, y + 0.2f, z);     // Chậu đặt trên sàn
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, 0.3f, 0.25f, 0.4f, 16, 16);
+    glPopMatrix();
+
+    // ==== Thân cây ====
+    GLfloat trunkColor[] = { 0.4f, 0.2f, 0.1f, 1.0f };
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, trunkColor);
+
+    glPushMatrix();
+    glTranslatef(x, y + 0.6f, z);     // Trên chậu
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, 0.05f, 0.05f, 1.0f, 16, 16);
+    glPopMatrix();
+
+    // ==== Các tầng tán lá ====
+    GLfloat leafColor[] = { 0.0f, 0.6f, 0.2f, 1.0f };  // Xanh lá cây
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, leafColor);
+
+    // Tầng dưới cùng
+    glPushMatrix();
+    glTranslatef(x, y + 1.1f, z);
+    gluSphere(quad, 0.4f, 16, 16);
+    glPopMatrix();
+
+    // Tầng giữa
+    glPushMatrix();
+    glTranslatef(x, y + 1.4f, z);
+    gluSphere(quad, 0.3f, 16, 16);
+    glPopMatrix();
+
+    // Tầng trên cùng
+    glPushMatrix();
+    glTranslatef(x, y + 1.65f, z);
+    gluSphere(quad, 0.2f, 16, 16);
+    glPopMatrix();
+
+    gluDeleteQuadric(quad);
+}
+
+void drawTrophy(float x, float y, float z) {
+    GLUquadric* quad = gluNewQuadric();
+
+    // ==== Đế cúp ====
+    GLfloat baseColor[] = { 0.4f, 0.2f, 0.1f, 1.0f };  // Nâu
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, baseColor);
+
+    glPushMatrix();
+    glTranslatef(x, y + 0.08f, z);
+    glScalef(0.3f, 0.1f, 0.3f);
+    drawBox(1.0f, 1.0f, 1.0f);
+    glPopMatrix();
+
+    // ==== Thân cúp (trụ) ====
+    GLfloat stemColor[] = { 0.9f, 0.8f, 0.1f, 1.0f };  // Vàng
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
+
+    glPushMatrix();
+    glTranslatef(x, y + 0.1f, z);
+    glRotatef(-90, 1, 0, 0);
+    gluCylinder(quad, 0.05f, 0.05f, 0.3f, 16, 16);
+    glPopMatrix();
+
+    // ==== Bầu cúp (hình cầu nhỏ) ====
+    glPushMatrix();
+    glTranslatef(x, y + 0.5f, z);
+    gluSphere(quad, 0.15f, 16, 16);
+    glPopMatrix();
+
+    gluDeleteQuadric(quad);
+}
+
+void drawSecurityCamera(float x, float y, float z, float rotateY = 0.0f, float rotateX = 0.0f) {
+    GLUquadric* quad = gluNewQuadric();
+
+    GLfloat bodyColor[] = { 0.3f, 0.3f, 0.3f, 1.0f };   // Xám đậm
+    GLfloat lensColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };   // Ống kính đen
+
+    // Thân camera (hình hộp)
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bodyColor);
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glRotatef(rotateY, 0, 1, 0);         // Quay ngang
+    glRotatef(rotateX, 1, 0, 0);         // Quay dọc
+    glScalef(0.3f, 0.2f, 0.5f);
+    drawBox(1.0f, 1.0f, 1.0f);
+    glPopMatrix();
+
+    // Ống kính camera (phía trước)
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, lensColor);
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glRotatef(rotateY, 0, 1, 0);
+    glRotatef(rotateX, 1, 0, 0);
+    glTranslatef(0.0f, 0.0f, 0.25f);     // phía trước
+    gluSphere(quad, 0.05f, 12, 12);
+    glPopMatrix();
+
+    gluDeleteQuadric(quad);
 }
 
 void setupLighting() {
@@ -556,7 +627,6 @@ void setupLighting() {
     }
 }
 
-
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -590,11 +660,20 @@ void display() {
     drawBlackboard();
     drawCabinets();
     drawProjector();
-    // Tranh trên tường bên trái
-    drawWallPicture(-6.0f, 4.0f, -7.8f);  // (X, Y, Z)
    
     // Đồng hồ trên tường trước
     drawWallClock(0.0f, 7.0f, -7.8f);    // (X, Y, Z)
+
+    // Vẽ cây 
+    drawPottedPlant(7.0f, -0.5f, 7.0f);
+    
+    // Vẽ cúp
+    drawTrophy(7.0f, 3.5f, -6.0f);
+    drawTrophy(7.0f, 3.5f, -3.5f);
+    drawTrophy(7.0f, 3.5f, -1.0f);
+    
+    // Camera góc phải trên, chiếu vào giữa lớp
+    drawSecurityCamera(7.7f, 8.0f, -7.5f, 320.0f, 40.0f);
 
     // Draw desks and chairs in rows
     for (int row = 0; row < 4; row++) {
@@ -670,12 +749,6 @@ void keyboard(unsigned char key, int x, int y) {
         cameraY -= 0.5f;
         break;
 
-    case 'c':
-    case 'C':
-        windowOpen = !windowOpen;
-        std::cout << "Windows: " << (windowOpen ? "Opened" : "Closed") << std::endl;
-        break;
-
     case 27: // ESC key
         exit(0);
         break;
@@ -733,7 +806,6 @@ void init() {
     std::cout << "2: Toggle left area light" << std::endl;
     std::cout << "3: Toggle right area light" << std::endl;
     std::cout << "4: Toggle projector light" << std::endl;
-    std::cout << "5: Toggle air conditioners" << std::endl;
 
     std::cout << "ESC: Exit" << std::endl;
     std::cout << "=============================" << std::endl;
