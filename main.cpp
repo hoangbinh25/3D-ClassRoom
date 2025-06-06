@@ -26,8 +26,8 @@ bool mousePressed = false;
 
 // Light positions
 GLfloat mainLightPos[] = { 0.0f, 7.0f, 0.0f, 1.0f };
-GLfloat leftLightPos[] = { -6.0f, .0f, 2.0f, 1.0f };
-GLfloat rightLightPos[] = { 6.0f, 7.0f, 2.0f, 1.0f };
+GLfloat leftLightPos[] = { 6.0f, .0f, 2.0f, 1.0f };
+GLfloat rightLightPos[] = { -6.0f, 7.0f, 2.0f, 1.0f };
 GLfloat projectorPos[] = { 0.0f, 7.5f, 8.0f, 1.0f };
 
 // Colors
@@ -364,7 +364,6 @@ void drawWalls() {
     glPopMatrix();
 
     // ==== CỬA SỔ TRÊN TƯỜNG TRÁI ====
-    // Cửa sổ mở được
     for (int i = 0; i < 4; i++) {
         drawWindowPair(-7.9f, 4.0f, -4.0f + i * 2.5f);
     }
@@ -779,8 +778,8 @@ void setupLighting() {
     // Main ceiling light (GL_LIGHT0)
     if (mainLightOn) {
         glEnable(GL_LIGHT0);
-        GLfloat mainAmbient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-        GLfloat mainDiffuse[] = { 0.6f, 0.6f, 0.6f, 1.0f }; // Giảm xuống một nửa
+        GLfloat mainAmbient[] = { 0.3f, 0.3f, 0.3f, 1.0f }; // ánh sáng nền( nhẹ, đều)
+        GLfloat mainDiffuse[] = { 0.6f, 0.6f, 0.6f, 1.0f }; // ánh sáng khuếch tán( chiếu từ nguồn sáng)
 
         glLightfv(GL_LIGHT0, GL_POSITION, mainLightPos);
         glLightfv(GL_LIGHT0, GL_AMBIENT, mainAmbient);
@@ -793,8 +792,8 @@ void setupLighting() {
     // Left light (GL_LIGHT1)
     if (leftLightOn) {
         glEnable(GL_LIGHT1);
-        GLfloat leftAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-        GLfloat leftDiffuse[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+        GLfloat leftAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };// RGBA (càng gần 1 càng sáng)
+        GLfloat leftDiffuse[] = { 0.3f, 0.3f, 0.3f, 1.0f };
         glLightfv(GL_LIGHT1, GL_POSITION, leftLightPos);
         glLightfv(GL_LIGHT1, GL_AMBIENT, leftAmbient);
         glLightfv(GL_LIGHT1, GL_DIFFUSE, leftDiffuse);
@@ -807,7 +806,7 @@ void setupLighting() {
     if (rightLightOn) {
         glEnable(GL_LIGHT2);
         GLfloat rightAmbient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-        GLfloat rightDiffuse[] = { 0.6f, 0.6f, 0.6f, 1.0f };
+        GLfloat rightDiffuse[] = { 0.3f, 0.3f, 0.3f, 1.0f };
         glLightfv(GL_LIGHT2, GL_POSITION, rightLightPos);
         glLightfv(GL_LIGHT2, GL_AMBIENT, rightAmbient);
         glLightfv(GL_LIGHT2, GL_DIFFUSE, rightDiffuse);
@@ -937,12 +936,12 @@ void keyboard(unsigned char key, int x, int y) {
         std::cout << "Main light: " << (mainLightOn ? "ON" : "OFF") << std::endl;
         break;
     case '2':
-        leftLightOn = !leftLightOn;
-        std::cout << "Left light: " << (leftLightOn ? "ON" : "OFF") << std::endl;
+        rightLightOn = !rightLightOn;
+        std::cout << "Right light: " << (leftLightOn ? "ON" : "OFF") << std::endl;
         break;
     case '3':
-        rightLightOn = !rightLightOn;
-        std::cout << "Right light: " << (rightLightOn ? "ON" : "OFF") << std::endl;
+        leftLightOn = !leftLightOn;
+        std::cout << "Left light: " << (rightLightOn ? "ON" : "OFF") << std::endl;
         break;
     case '4':
         projectorOn = !projectorOn;
